@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service History - RoadSide Helpers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2b4c8c 0%, #1a365d 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .header img:hover {
+            transform: scale(1.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .back-button {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .history-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .history-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .service-id {
+            font-weight: bold;
+            color: #2b4c8c;
+        }
+
+        .service-date {
+            color: #666;
+        }
+
+        .service-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-item i {
+            color: #2b4c8c;
+            width: 20px;
+        }
+
+        .detail-label {
+            color: #2b4c8c;
+            font-weight: 500;
+            margin-right: 5px;
+        }
+
+        .detail-value {
+            color: #333;
+        }
+
+        .status-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+
+        .no-history {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <img alt="Mechanic Profile Logo" src="mechanic.png"/>
+            <h1>Service History</h1>
+        </div>
+        <button onclick="window.location.href='mecprofile.html'" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Back to Profile
+        </button>
+    </div>
+
+    <div class="container" id="historyContainer">
+        <!-- History cards will be inserted here -->
+        <div class="no-history" id="noHistoryMessage" style="display: none;">
+            <i class="fas fa-history fa-3x" style="color: #ccc; margin-bottom: 20px;"></i>
+            <h3>No completed services yet</h3>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'meclogin.html';
+                return;
+            }
+
+            try {
+                // First get the mechanic profile to get the name
+                const profileResponse = await makeApiCall('/mechanics/profile', 'GET');
+                const mechanicName = profileResponse.data.name;
+                
+                console.log('Logged in mechanic:', mechanicName); // Debug log
+
+                // Fetch completed services using the new endpoint
+                const servicesResponse = await makeApiCall('/services/mechanic/' + encodeURIComponent(mechanicName) + '/completed', 'GET');
+                const services = servicesResponse.data || [];
+                
+                console.log('Completed services:', services); // Debug log
+                
+                const container = document.getElementById('historyContainer');
+                const noHistoryMessage = document.getElementById('noHistoryMessage');
+
+                // Clear any existing content
+                container.innerHTML = '';
+                container.appendChild(noHistoryMessage);
+
+                if (!services || services.length === 0) {
+                    console.log('No completed services found'); // Debug no services case
+                    noHistoryMessage.style.display = 'block';
+                    return;
+                }
+
+                noHistoryMessage.style.display = 'none';
+                
+                services.forEach(service => {
+                    const card = createHistoryCard(service);
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error fetching history:', error);
+                console.error('Error details:', error.response); // Debug error details
+                if (error.response && error.response.status === 401) {
+                    window.location.href = 'meclogin.html';
+                } else {
+                    alert('Failed to load service history. Please try again.');
+                }
+            }
+        });
+
+        function createHistoryCard(service) {
+            const card = document.createElement('div');
+            card.className = 'history-card';
+            
+            const date = service.completed_at ? new Date(service.completed_at).toLocaleString() : 'N/A';
+            
+            card.innerHTML = `
+                <div class="service-header">
+                    <span class="service-id">Service #${service.id}</span>
+                    <span class="service-date">${date}</span>
+                </div>
+                <div class="service-details">
+                    <div class="detail-item">
+                        <i class="fas fa-user"></i>
+                        <span><span class="detail-label">Customer:</span> <span class="detail-value">${service.customer_name || 'N/A'}</span></span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-tools"></i>
+                        <span><span class="detail-label">Service:</span> <span class="detail-value">${service.service_type}</span></span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-car"></i>
+                        <span><span class="detail-label">Vehicle:</span> <span class="detail-value">${service.vehicle_type}</span></span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span><span class="detail-label">Location:</span> <span class="detail-value">${service.location}</span></span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-comment"></i>
+                        <span><span class="detail-label">Description:</span> <span class="detail-value">${service.description || 'No description'}</span></span>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanic Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="api.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .header h1 {
+            margin: 0;
+            color: #1e3c72;
+        }
+        .logout-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .services-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .service-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .service-card h3 {
+            margin-top: 0;
+            color: #1e3c72;
+        }
+        .service-info {
+            margin-bottom: 15px;
+        }
+        .service-info p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .status-pending {
+            background: #ffeaa7;
+            color: #d35400;
+        }
+        .status-accepted {
+            background: #55efc4;
+            color: #00b894;
+        }
+        .status-completed {
+            background: #74b9ff;
+            color: #0984e3;
+        }
+        .status-rejected {
+            background: #ff7675;
+            color: #d63031;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .accept-btn {
+            background: #00b894;
+            color: white;
+        }
+        .complete-btn {
+            background: #0984e3;
+            color: white;
+        }
+        .reject-btn {
+            background: #ff4757;
+            color: white;
+        }
+        .no-services {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .no-services i {
+            font-size: 48px;
+            color: #b2bec3;
+            margin-bottom: 20px;
+        }
+        .no-services p {
+            color: #636e72;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Mechanic Dashboard</h1>
+            <button class="logout-btn" onclick="handleLogout()">Logout</button>
+        </div>
+        <div id="services-container" class="services-container">
+            <!-- Services will be loaded here dynamically -->
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'meclogin.html';
+        }
+
+        // Load services when the page loads
+        document.addEventListener('DOMContentLoaded', loadServices);
+
+        async function loadServices() {
+            try {
+                const response = await api.getMechanicServices();
+                displayServices(response.data);
+            } catch (error) {
+                console.error('Error loading services:', error);
+                showError('Failed to load services. Please try again.');
+            }
+        }
+
+        function displayServices(services) {
+            const container = document.getElementById('services-container');
+            
+            if (!services || services.length === 0) {
+                container.innerHTML = `
+                    <div class="no-services">
+                        <i class="fas fa-tools"></i>
+                        <p>No services booked yet</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = services.map(service => `
+                <div class="service-card">
+                    <h3>Service Request #${service.id}</h3>
+                    <div class="service-info">
+                        <p><strong>Customer:</strong> ${service.customer_name}</p>
+                        <p><strong>Vehicle:</strong> ${service.vehicle_details}</p>
+                        <p><strong>Service Type:</strong> ${service.service_type}</p>
+                        <p><strong>Date:</strong> ${new Date(service.created_at).toLocaleString()}</p>
+                        <p>
+                            <span class="status-badge status-${service.status.toLowerCase()}">
+                                ${service.status}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="action-buttons">
+                        ${service.status === 'pending' ? `
+                            <button class="action-btn accept-btn" onclick="updateServiceStatus(${service.id}, 'accepted')">
+                                Accept
+                            </button>
+                            <button class="action-btn reject-btn" onclick="updateServiceStatus(${service.id}, 'rejected')">
+                                Reject
+                            </button>
+                        ` : ''}
+                        ${service.status === 'accepted' ? `
+                            <button class="action-btn complete-btn" onclick="updateServiceStatus(${service.id}, 'completed')">
+                                Mark as Completed
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function updateServiceStatus(serviceId, status) {
+            try {
+                await api.updateServiceStatus(serviceId, status);
+                alert(`Service ${status} successfully`);
+                loadServices();
+            } catch (error) {
+                console.error('Error updating service status:', error);
+                alert('Failed to update service status. Please try again.');
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('token');
+            window.location.href = 'meclogin.html';
+        }
+
+        function showError(message) {
+            const container = document.getElementById('services-container');
+            container.innerHTML = `
+                <div class="no-services">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html> 

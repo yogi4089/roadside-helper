@@ -1,0 +1,295 @@
+<html>
+ <head>
+  <title>
+   Professional Auto Services Dashboard
+  </title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <style>
+   body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            margin-right: 20px;
+            border: 2px solid rgba(255,255,255,0.9);
+            transition: transform 0.3s ease;
+        }
+        .header img:hover {
+            transform: scale(1.1);
+        }
+        .header h1 {
+            font-size: 28px;
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 1.2px;
+        }
+        .dashboard {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .dashboard h2 {
+            color: #1e3c72;
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .dashboard h2:after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            margin: 15px auto;
+            border-radius: 2px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .button.pending {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5253 100%);
+        }
+        .button.ongoing {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+        .requests {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .requests h3 {
+            font-size: 24px;
+            color: #1e3c72;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #1e3c72;
+        }
+        .request-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .request-card:hover {
+            transform: translateY(-5px);
+        }
+        .request-card p {
+            margin: 12px 0;
+            font-size: 16px;
+            color: #4a5568;
+            align-items: center;
+        }
+        .request-card strong {
+            min-width: 100px;
+            color: #1e3c72;
+            font-weight: 600;
+        }
+        .request-card .actions {
+            display: flex;
+            gap: 10px;
+        }
+        .request-card .actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .request-card .actions button.accept {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        .request-card .actions button.accept.accepted {
+            background: linear-gradient(135deg, #32CD32 0%, #228B22 100%);
+            pointer-events: none;
+            animation: acceptAnimation 0.5s ease forwards;
+        }
+        @keyframes acceptAnimation {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .request-card .actions button.decline {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5253 100%);
+        }
+        .request-card .actions button.decline.rejected {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            pointer-events: none;
+            animation: rejectAnimation 0.5s ease forwards;
+        }
+        @keyframes rejectAnimation {
+            0% {
+                transform: scale(1) rotate(0deg);
+            }
+            25% {
+                transform: scale(1.1) rotate(-5deg);
+            }
+            75% {
+                transform: scale(1.1) rotate(5deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+        .request-card .actions button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+  </style>
+ </head>
+ <body>
+  <div class="header">
+   <img alt="Logo" src="mechanic.png"/>
+   <h1>
+    Professional Auto Services
+   </h1>
+  </div>
+  <div class="dashboard">
+   <h2>
+    Service Dashboard
+   </h2>
+   <div class="buttons">
+    <button class="button pending">
+     <i class="fas fa-clock"></i>
+     Pending Requests
+    </button>
+    <button class="button ongoing" onclick="window.location.href='ongoing.html'">
+     <i class="fas fa-tools"></i>
+     Ongoing Services
+    </button>
+   </div>
+  </div>
+  <div class="requests">
+   <h3>
+    Active Service Requests
+   </h3>
+   <div class="request-card">
+    <p>
+     <strong>Name:</strong>
+     Yogi
+    </p>
+    <p>
+     <strong>Contact:</strong>
+     9087680980
+    </p>
+    <p>
+     <strong>Location:</strong>
+     Bhagvan Mahaveer
+    </p>
+    <div class="actions">
+     <button class="accept" onclick="this.classList.add('accepted'); this.textContent='Accepted'">Accept</button>
+     <button class="decline" onclick="this.classList.add('rejected'); this.textContent='Rejected'">Decline</button>
+    </div>
+   </div>
+   <div class="request-card">
+    <p>
+     <strong>Name:</strong>
+     Prince
+    </p>
+    <p>
+     <strong>Contact:</strong>
+     9898156800
+    </p>
+    <p>
+     <strong>Location:</strong>
+     Svnit
+    </p>
+    <div class="actions">
+     <button class="accept" onclick="this.classList.add('accepted'); this.textContent='Accepted'">Accept</button>
+     <button class="decline" onclick="this.classList.add('rejected'); this.textContent='Rejected'">Decline</button>
+    </div>
+   </div>
+   <div class="request-card">
+    <p>
+     <strong>Name:</strong>
+     Ridham
+    </p>
+    <p>
+     <strong>Contact:</strong>
+     9898156800
+    </p>
+    <p>
+     <strong>Location:</strong>
+     GTU
+    </p>
+    <div class="actions">
+     <button class="accept" onclick="this.classList.add('accepted'); this.textContent='Accepted'">Accept</button>
+     <button class="decline" onclick="this.classList.add('rejected'); this.textContent='Rejected'">Decline</button>
+    </div>
+   </div>
+   <div class="request-card">
+    <p>
+     <strong>Name:</strong>
+     Jenis
+    </p>
+    <p>
+     <strong>Contact:</strong>
+     9898156800
+    </p>
+    <p>
+     <strong>Location:</strong>
+     SSASIT
+    </p>
+    <div class="actions">
+     <button class="accept" onclick="this.classList.add('accepted'); this.textContent='Accepted'">Accept</button>
+     <button class="decline" onclick="this.classList.add('rejected'); this.textContent='Rejected'">Decline</button>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

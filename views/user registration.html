@@ -1,0 +1,276 @@
+<html>
+<head>
+    <title>User Sign-Up</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="api.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 450px;
+            margin: 40px auto;
+            padding: 40px;
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-radius: 20px;
+            transition: transform 0.3s ease;
+        }
+        .container:hover {
+            transform: translateY(-5px);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            margin: 20px auto 0;
+            border-radius: 2px;
+        }
+        .header h2 {
+            color: #1e3c72;
+            font-size: 32px;
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 1.2px;
+        }
+        .form-group {
+            margin: 25px 0;
+            position: relative;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 500;
+            font-size: 15px;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            background: #ffffff;
+        }
+        .form-group input:focus {
+            border-color: #1e3c72;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(30,60,114,0.1);
+        }
+        .form-group input[type="radio"] {
+            margin-right: 10px;
+        }
+        .form-group input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+        .form-group .gender {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .form-group .gender-options {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .form-group .gender-options label {
+            display: flex;
+            align-items: center;
+            margin: 0;
+            cursor: pointer;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+        .password-strength {
+            margin-top: 5px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        .strength-meter {
+            height: 4px;
+            flex: 1;
+            border-radius: 2px;
+            margin-right: 10px;
+            background: #e2e8f0;
+        }
+        .strength-meter div {
+            height: 100%;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            width: 0;
+        }
+        .weak { background-color: #dc3545; }
+        .medium { background-color: #ffc107; }
+        .strong { background-color: #28a745; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Create Account</h2>
+        </div>
+        <form id="registrationForm" onsubmit="handleRegistration(event)">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="contact">Contact Number (10 digits)</label>
+                <input type="text" id="contact" name="contact" placeholder="Enter your contact number" pattern="\d{10}" title="Please enter a valid 10-digit contact number" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                <div class="password-strength">
+                    <div class="strength-meter">
+                        <div id="strength-bar"></div>
+                    </div>
+                    <span id="strength-text">Password Strength</span>
+                </div>
+            </div>
+            <div class="form-group gender">
+                <label>Gender</label>
+                <div class="gender-options">
+                    <label>
+                        <input type="radio" name="gender" value="male" required> Male
+                    </label>
+                    <label>
+                        <input type="radio" name="gender" value="female" required> Female
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <span>I agree to the Terms and Conditions</span>
+                </label>
+            </div>
+            <button type="submit" class="submit-btn">Sign Up</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthBar = document.getElementById('strength-bar');
+            const strengthText = document.getElementById('strength-text');
+            
+            // Remove any existing classes
+            strengthBar.className = '';
+            
+            // Check password strength
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/\d/)) strength++;
+            if (password.match(/[^a-zA-Z\d]/)) strength++;
+            
+            // Update strength meter
+            switch(strength) {
+                case 0:
+                case 1:
+                    strengthBar.className = 'weak';
+                    strengthBar.style.width = '33%';
+                    strengthText.textContent = 'Weak';
+                    break;
+                case 2:
+                case 3:
+                    strengthBar.className = 'medium';
+                    strengthBar.style.width = '66%';
+                    strengthText.textContent = 'Medium';
+                    break;
+                case 4:
+                    strengthBar.className = 'strong';
+                    strengthBar.style.width = '100%';
+                    strengthText.textContent = 'Strong';
+                    break;
+            }
+        });
+
+        async function handleRegistration(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const contact = document.getElementById('contact').value;
+            const password = document.getElementById('password').value;
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            
+            try {
+                const userData = {
+                    name,
+                    email,
+                    contact,
+                    password,
+                    gender
+                };
+                
+                console.log('Sending registration data:', userData);
+                
+                const response = await fetch('http://localhost:5000/api/customers/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                const data = await response.json();
+                console.log('Registration response:', data);
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Registration failed');
+                }
+                
+                alert('Registration successful! You can now log in.');
+                window.location.href = '/loginuser';
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Registration failed: ' + (error.message || 'Please try again'));
+            }
+        }
+    </script>
+</body>
+</html>

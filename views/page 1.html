@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoadSide Helpers</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <script src="api.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: clamp(10px, 3vw, 20px);
+        }
+
+        .container {
+            background: #ffffff;
+            width: min(95%, 500px);
+            padding: clamp(20px, 4vw, 40px);
+            border-radius: clamp(10px, 2vw, 20px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        .tutorial-btn {
+            position: absolute;
+            top: clamp(10px, 2vw, 20px);
+            right: clamp(10px, 2vw, 20px);
+            padding: clamp(8px, 1.5vw, 12px) clamp(15px, 2vw, 20px);
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            font-weight: 600;
+            font-size: clamp(14px, 1.5vw, 16px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(30,60,114,0.2);
+            animation: pulse 2s infinite;
+            z-index: 1;
+        }
+
+        .tutorial-btn:before {
+            content: '\f05a';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+
+        .tutorial-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(30,60,114,0.3);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(30,60,114,0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(30,60,114,0); }
+            100% { box-shadow: 0 0 0 0 rgba(30,60,114,0); }
+        }
+
+        h1 {
+            color: #1e3c72;
+            font-size: clamp(24px, 4vw, 32px);
+            text-align: center;
+            margin-bottom: clamp(20px, 4vw, 40px);
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            position: relative;
+            padding-top: clamp(30px, 5vw, 40px);
+        }
+
+        h1::after {
+            content: '';
+            display: block;
+            width: clamp(40px, 8vw, 60px);
+            height: 4px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            margin: clamp(10px, 2vw, 20px) auto 0;
+            border-radius: 2px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: clamp(15px, 3vw, 20px);
+            margin: clamp(10px, 2vw, 15px) 0;
+            border: 2px solid #e2e8f0;
+            border-radius: clamp(8px, 1.5vw, 12px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            gap: clamp(10px, 2vw, 20px);
+        }
+
+        .option:hover {
+            border-color: #1e3c72;
+            background: rgba(30,60,114,0.05);
+            transform: translateY(-2px);
+        }
+
+        .option img {
+            width: clamp(40px, 8vw, 60px);
+            height: clamp(40px, 8vw, 60px);
+            border-radius: 50%;
+            border: 3px solid #1e3c72;
+            padding: 2px;
+            background: white;
+            object-fit: cover;
+        }
+
+        .option label {
+            font-size: clamp(16px, 2vw, 18px);
+            font-weight: 500;
+            color: #4a5568;
+            flex: 1;
+            min-width: 60px;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: clamp(5px, 1vw, 10px);
+            margin-left: auto;
+        }
+
+        .auth-button {
+            padding: clamp(6px, 1.2vw, 8px) clamp(10px, 2vw, 15px);
+            border: 2px solid #1e3c72;
+            border-radius: clamp(6px, 1.2vw, 8px);
+            background: transparent;
+            color: #1e3c72;
+            font-weight: 600;
+            font-size: clamp(14px, 1.5vw, 16px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .auth-button:hover {
+            background: #1e3c72;
+            color: white;
+        }
+        
+        .admin-button {
+            padding: clamp(6px, 1.2vw, 8px) clamp(10px, 2vw, 15px);
+            border: 2px solid #1e3c72;
+            border-radius: clamp(6px, 1.2vw, 8px);
+            background: transparent;
+            color: #1e3c72;
+            font-weight: 600;
+            font-size: clamp(14px, 1.5vw, 16px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .admin-button:hover {
+            background: #1e3c72;
+            color: white;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            .option {
+                flex-direction: column;
+                text-align: center;
+                padding: 15px;
+            }
+
+            .auth-buttons {
+                margin: 10px auto 0;
+            }
+
+            .option label {
+                margin: 10px 0;
+            }
+
+            .tutorial-btn {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin: 0 auto 20px;
+                width: fit-content;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                margin-top: 0;
+                padding-top: 0;
+            }
+        }
+
+        /* Tablet Adjustments */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .option {
+                padding: 15px;
+            }
+
+            .auth-buttons {
+                flex-wrap: nowrap;
+            }
+
+            .auth-button {
+                padding: 6px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="tutorial-btn" onclick="window.location.href='tutorial.html'">Tutorial</button>
+        <h1>RoadSide Helpers</h1>
+        <div class="option">
+            <img src="https://storage.googleapis.com/a1aa/image/9Huw3xskSsZzO5Ilet26bXgTw9ktnpaLMCfx0eEIRo9R9jQnA.jpg" alt="Icon of a user" width="50" height="50">
+            <label>User</label>
+            <div class="auth-buttons">
+                <button class="auth-button" onclick="window.location.href='loginuser.html'">Login</button>
+                <button class="auth-button" onclick="window.location.href='user registration.html'">Sign Up</button>
+            </div>
+        </div>
+        <div class="option">
+            <img src="https://storage.googleapis.com/a1aa/image/riuJtlLfCs3gUqz7lJPAudSBo9rZLfPWgLaDN8qxSgMmejQnA.jpg" alt="Icon of a mechanic" width="50" height="50">
+            <label>Mechanic</label>
+            <div class="auth-buttons">
+                <button class="auth-button" onclick="window.location.href='meclogin.html'">Login</button>
+                <button class="auth-button" onclick="window.location.href='mecsignup.html'">Sign Up</button>
+            </div>
+        </div>
+        <div class="option">
+            <img src="https://storage.googleapis.com/a1aa/image/admin-icon.png" alt="Icon of an admin" width="50" height="50" onerror="this.src='https://storage.googleapis.com/a1aa/image/9Huw3xskSsZzO5Ilet26bXgTw9ktnpaLMCfx0eEIRo9R9jQnA.jpg'">
+            <label>Admin</label>
+            <div class="auth-buttons">
+                <button class="admin-button" onclick="window.location.href='admin-login.html'">Enter</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/meclogin.html';
+            return;
+        }
+
+        const response = await makeApiCall('/mechanics/profile', 'GET');
+        // Update the profile page with the response data
+    </script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanic Registration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="api.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 500px;
+            width: 90%;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #1e3c72;
+            margin: 0;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #2d3436;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dfe6e9;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #74b9ff;
+        }
+        .form-group .error {
+            color: #d63031;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #1e3c72;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .submit-btn:hover {
+            background: #2c3e50;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #636e72;
+        }
+        .login-link a {
+            color: #1e3c72;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        .success-message {
+            display: none;
+            text-align: center;
+            color: #00b894;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Mechanic Registration</h1>
+        </div>
+        <form id="registrationForm" onsubmit="handleRegistration(event)">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+                <div class="error" id="nameError"></div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+                <div class="error" id="emailError"></div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <div class="error" id="passwordError"></div>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" required>
+                <div class="error" id="phoneError"></div>
+            </div>
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location" required>
+                <div class="error" id="locationError"></div>
+            </div>
+            <div class="form-group">
+                <label for="service_category">Service Category</label>
+                <select id="service_category" name="service_category" required>
+                    <option value="">Select a category</option>
+                    <option value="general">General Maintenance</option>
+                    <option value="engine">Engine Repair</option>
+                    <option value="electrical">Electrical Systems</option>
+                    <option value="brake">Brake Service</option>
+                    <option value="transmission">Transmission</option>
+                    <option value="body">Body Work</option>
+                    <option value="diagnostic">Diagnostic Services</option>
+                </select>
+            </div>
+            <button type="submit" class="submit-btn">Register</button>
+        </form>
+        <div class="success-message" id="successMessage">
+            Registration successful! Redirecting to login...
+        </div>
+        <div class="login-link">
+            Already have an account? <a href="meclogin.html">Login here</a>
+        </div>
+    </div>
+
+    <script>
+        async function handleRegistration(event) {
+            event.preventDefault();
+            
+            // Reset error messages
+            document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+            
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                password: document.getElementById('password').value,
+                phone: document.getElementById('phone').value.trim(),
+                location: document.getElementById('location').value.trim(),
+                service_category: document.getElementById('service_category').value
+            };
+            
+            // Validate form data
+            if (!formData.name || !formData.email || !formData.password || !formData.phone || !formData.location || !formData.service_category) {
+                const errorMessage = 'All fields are required';
+                document.getElementById('errorMessage').textContent = errorMessage;
+                document.getElementById('errorMessage').style.display = 'block';
+                submitButton.disabled = false;
+                submitButton.textContent = 'Register';
+                return;
+            }
+            
+            console.log('Submitting registration data:', formData);
+            
+            // Disable submit button to prevent multiple submissions
+            const submitButton = document.querySelector('.submit-btn');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Registering...';
+            
+            try {
+                const response = await fetch('/api/mechanics/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                console.log('Server response:', data);
+                
+                if (!response.ok) {
+                    throw new Error(data.error || data.details || 'Registration failed');
+                }
+                
+                // Show success message
+                document.getElementById('successMessage').style.display = 'block';
+                
+                // Redirect to login page after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'meclogin.html';
+                }, 2000);
+            } catch (error) {
+                console.error('Registration error:', error);
+                const errorMessage = error.message || 'Registration failed. Please try again.';
+                document.getElementById('errorMessage').textContent = errorMessage;
+                document.getElementById('errorMessage').style.display = 'block';
+                submitButton.disabled = false;
+                submitButton.textContent = 'Register';
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - RoadSide Helpers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2b4c8c 0%, #1a365d 100%);
+            color: white;
+            padding: clamp(15px, 3vw, 20px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: clamp(10px, 2vw, 20px);
+            flex-wrap: wrap;
+        }
+
+        .header-right {
+            margin-left: auto;
+        }
+
+        .header img {
+            width: clamp(40px, 8vw, 50px);
+            height: clamp(40px, 8vw, 50px);
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .header img:hover {
+            transform: scale(1.1);
+        }
+
+        .header h1 {
+            font-size: clamp(20px, 4vw, 28px);
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 1.2px;
+        }
+
+        .header .menu-icon {
+            display: none;
+        }
+
+        .profile-container {
+            background-color: white;
+            border-radius: clamp(15px, 3vw, 20px);
+            padding: clamp(20px, 4vw, 40px);
+            margin: clamp(20px, 5vw, 50px) auto;
+            width: min(95%, 700px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .profile-container img {
+            width: clamp(150px, 30vw, 200px);
+            height: clamp(150px, 30vw, 200px);
+            border-radius: 50%;
+            border: clamp(3px, 1vw, 5px) solid #2b4c8c;
+            padding: clamp(3px, 1vw, 5px);
+            background-color: white;
+            transition: transform 0.3s ease;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .profile-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-container h2 {
+            font-size: clamp(24px, 5vw, 34px);
+            margin: clamp(15px, 3vw, 25px) 0;
+            color: #2b4c8c;
+            font-weight: 700;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-container h2:after {
+            content: '';
+            display: block;
+            width: clamp(40px, 8vw, 60px);
+            height: 4px;
+            background: linear-gradient(to right, #2b4c8c, #1a365d);
+            margin: clamp(10px, 2vw, 15px) auto;
+            border-radius: 2px;
+        }
+
+        .profile-info {
+            text-align: left;
+            margin: clamp(20px, 4vw, 40px) auto;
+            width: min(95%, 85%);
+            background-color: #f8fafc;
+            padding: clamp(15px, 3vw, 25px);
+            border-radius: clamp(10px, 2vw, 15px);
+        }
+
+        .profile-info p {
+            font-size: clamp(16px, 2vw, 18px);
+            margin: clamp(10px, 2vw, 20px) 0;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            padding: clamp(12px, 2vw, 16px);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .profile-info p:hover {
+            background-color: #2b4c8c;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(43,76,140,0.15);
+        }
+
+        .profile-info i {
+            color: #2b4c8c;
+            font-size: 18px;
+            width: 24px;
+            margin-right: 12px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .profile-info b {
+            min-width: 70px;
+            margin-right: 8px;
+            color: #2b4c8c;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .profile-info span {
+            color: #4a5568;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
+        }
+
+        .profile-info p:hover i,
+        .profile-info p:hover b,
+        .profile-info p:hover span {
+            color: white;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: clamp(10px, 2vw, 20px);
+            margin-top: clamp(20px, 4vw, 40px);
+            margin-bottom: clamp(10px, 2vw, 20px);
+            width: 100%;
+            flex-wrap: nowrap;
+        }
+
+        .cancel-button, .next-button, .history-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: min(45%, 220px);
+            margin: 0;
+            padding: clamp(10px, 1.5vw, 14px) clamp(15px, 2vw, 24px);
+            background: linear-gradient(45deg, #2b4c8c, #1a365d);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: clamp(12px, 1.8vw, 14px);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(43,76,140,0.2);
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .cancel-button:before, .next-button:before, .history-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .cancel-button:hover:before, .next-button:hover:before, .history-button:hover:before {
+            left: 100%;
+        }
+
+        .cancel-button:hover, .next-button:hover, .history-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(43,76,140,0.3);
+            background: linear-gradient(45deg, #1a365d, #2b4c8c);
+        }
+
+        .cancel-button:active, .next-button:active, .history-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 4px 15px rgba(43,76,140,0.2);
+        }
+
+        .vehicle-type-dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .vehicle-type-dropdown .dropdown-content {
+            display: none;
+            position: relative;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            right: 0;
+        }
+
+        .vehicle-type-dropdown .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .vehicle-type-dropdown .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .vehicle-type-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .btn {
+            padding: clamp(10px, 2vw, 12px) clamp(20px, 3vw, 24px);
+            background: linear-gradient(45deg, #2b4c8c, #1a365d);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: clamp(14px, 2vw, 16px);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: clamp(120px, 20vw, 150px);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(43,76,140,0.3);
+        }
+
+        .btn i {
+            margin-right: 6px;
+            color: white;
+            font-size: clamp(12px, 1.8vw, 14px);
+            width: clamp(12px, 1.8vw, 14px);
+        }
+
+        .header-logout {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            padding: clamp(8px, 1.5vw, 10px) clamp(15px, 2vw, 20px);
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: clamp(14px, 2vw, 16px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .header-logout:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-left {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .header-right {
+                margin: 10px auto 0;
+            }
+
+            .profile-info p {
+                padding: 10px 12px;
+                margin: 8px 0;
+                font-size: 14px;
+            }
+
+            .profile-info i {
+                font-size: 16px;
+                width: 20px;
+                margin-right: 8px;
+            }
+
+            .profile-info b {
+                min-width: 60px;
+                font-size: 14px;
+            }
+
+            .profile-info span {
+                font-size: 14px;
+            }
+
+            .button-container {
+                flex-direction: row;
+                gap: 10px;
+                padding: 0 10px;
+            }
+
+            .cancel-button, .next-button, .history-button {
+                width: 48%;
+                padding: 10px 15px;
+                font-size: 12px;
+            }
+
+            .btn {
+                padding: 8px 12px;
+                font-size: 12px;
+                min-width: 100px;
+            }
+
+            .btn i {
+                margin-right: 4px;
+                font-size: 10px;
+                width: 10px;
+            }
+        }
+
+        /* Tablet Adjustments */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .profile-container {
+                padding: 30px;
+            }
+
+            .profile-info {
+                width: 90%;
+            }
+
+            .button-container {
+                gap: 15px;
+            }
+
+            .cancel-button, .next-button, .history-button {
+                width: 45%;
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            .btn {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+
+            .btn i {
+                margin-right: 5px;
+                font-size: 12px;
+                width: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <img alt="User Profile Logo" src="mechanic.png"/>
+            <h1>User Profile</h1>
+        </div>
+        <div class="header-right">
+            <button onclick="logout()" class="header-logout">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </button>
+        </div>
+    </div>
+    <div class="profile-container">
+        <img class="profilepic" alt="User Profile Picture" src="profitle.jpg">
+        <h2>
+            User Profile
+        </h2>
+        <div class="profile-info">
+            <p>
+                <i class="fas fa-user"></i>
+                <b>Name:</b>
+                <span id="userName">Loading...</span>
+            </p>
+            <p>
+                <i class="fas fa-envelope"></i>
+                <b>Email:</b>
+                <span id="userEmail">Loading...</span>
+            </p>
+            <p>
+                <i class="fas fa-phone"></i>
+                <b>Phone:</b>
+                <span id="userPhone">Loading...</span>
+            </p>
+            <p>
+                <i class="fas fa-venus-mars"></i>
+                <b>Gender: </b>
+                <span id="userGender">Loading...</span>
+            </p>
+            <div class="vehicle-type-dropdown">
+                <p>
+                    <i class="fas fa-car"></i>
+                    <b>Vehicle Type:</b>
+                    <span id="vehicle-type">Four Wheeler</span>
+                    <i class="fas fa-caret-down"></i>
+                </p>
+                <div class="dropdown-content">
+                    <a href="#" onclick="changeVehicleType('Four Wheeler')">Four Wheeler</a>
+                    <a href="#" onclick="changeVehicleType('Two Wheeler')">Two Wheeler</a>
+                    <a href="#" onclick="changeVehicleType('Three Wheeler')">Three Wheeler</a>
+                </div>
+            </div>
+            <div class="button-container">
+                <a href="user-history.html" class="btn">
+                    <i class="fas fa-history"></i>
+                    History
+                </a>
+                <a href="dashcust.html" class="btn">
+                    <i class="fas fa-arrow-right"></i>
+                    Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script>
+        function changeVehicleType(type) {
+            document.getElementById('vehicle-type').innerText = type;
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/loginuser.html';
+                return;
+            }
+
+            try {
+                const userProfile = await makeApiCall('/customers/profile', 'GET');
+                console.log('Fetched profile data:', userProfile); // Debug log
+                console.log('Name:', userProfile.data.name);
+                
+                // Update profile information with data from database
+                document.getElementById('userName').textContent = userProfile.data.name || 'N/A';
+                document.getElementById('userEmail').textContent = userProfile.data.email || 'N/A';
+                document.getElementById('userPhone').textContent = userProfile.data.contact || 'N/A';
+                document.getElementById('userGender').textContent = userProfile.data.gender || 'N/A';
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                alert('Failed to load profile. Please try again.');
+            }
+        });
+
+        function logout() {
+            // Clear all stored data
+            localStorage.clear();
+            // Redirect to login page
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html> 

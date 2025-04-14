@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Service - RoadSide Helpers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="api.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2b4c8c 0%, #1a365d 100%);
+            color: white;
+            padding: clamp(15px, 3vw, 20px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: clamp(10px, 2vw, 20px);
+            flex-wrap: wrap;
+        }
+
+        .header img {
+            width: clamp(40px, 8vw, 50px);
+            height: clamp(40px, 8vw, 50px);
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .header img:hover {
+            transform: scale(1.1);
+        }
+
+        .header h1 {
+            font-size: clamp(20px, 4vw, 28px);
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 1.2px;
+        }
+
+        .header-logout {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            padding: clamp(8px, 1.5vw, 10px) clamp(15px, 2vw, 20px);
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: clamp(14px, 2vw, 16px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .header-logout:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-container {
+            max-width: min(95%, 600px);
+            margin: clamp(20px, 4vw, 40px) auto;
+            background: white;
+            padding: clamp(20px, 3vw, 30px);
+            border-radius: clamp(8px, 1.5vw, 10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: clamp(15px, 2vw, 20px);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: clamp(5px, 1vw, 8px);
+            color: #333;
+            font-weight: 500;
+            font-size: clamp(14px, 2vw, 16px);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: clamp(10px, 1.5vw, 12px);
+            border: 1px solid #ddd;
+            border-radius: clamp(4px, 1vw, 5px);
+            font-size: clamp(14px, 2vw, 16px);
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #2b4c8c;
+            outline: none;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #2b4c8c, #1a365d);
+            color: white;
+            border: none;
+            padding: clamp(10px, 1.5vw, 12px) clamp(20px, 3vw, 24px);
+            border-radius: clamp(4px, 1vw, 5px);
+            cursor: pointer;
+            font-size: clamp(14px, 2vw, 16px);
+            width: 100%;
+            margin-top: clamp(15px, 2vw, 20px);
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(45deg, #1a365d, #2b4c8c);
+            transform: translateY(-2px);
+        }
+
+        .mechanic-info {
+            background: #f8f9fa;
+            padding: clamp(12px, 2vw, 15px);
+            border-radius: clamp(4px, 1vw, 5px);
+            margin-bottom: clamp(15px, 2vw, 20px);
+        }
+
+        .mechanic-info p {
+            margin: clamp(4px, 1vw, 5px) 0;
+            color: #555;
+            font-size: clamp(14px, 2vw, 16px);
+        }
+
+        .mechanic-info h3 {
+            font-size: clamp(16px, 2.5vw, 18px);
+            margin-bottom: clamp(8px, 1.5vw, 10px);
+            color: #2b4c8c;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-left {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .header-logout {
+                margin: 10px auto 0;
+            }
+
+            .form-container {
+                padding: 15px;
+                margin: 20px 15px;
+            }
+
+            .submit-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+
+        /* Tablet Adjustments */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .form-container {
+                padding: 25px;
+                margin: 30px auto;
+            }
+
+            .submit-btn {
+                padding: 12px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <img alt="User Profile Logo" src="mechanic.png"/>
+            <h1>Request Service</h1>
+        </div>
+        <button onclick="window.location.href='dashcust.html'" class="header-logout">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </button>
+    </div>
+
+    <div class="form-container">
+        <div class="mechanic-info" id="selectedMechanicInfo">
+            <!-- Mechanic info will be loaded here -->
+        </div>
+
+        <form id="serviceRequestForm">
+            <div class="form-group">
+                <label for="serviceType">Service Type</label>
+                <select id="serviceType" name="serviceType" required>
+                    <option value="">Select Service Type</option>
+                    <option value="emergency">Emergency Service</option>
+                    <option value="repair">Repair</option>
+                    <option value="maintenance">Maintenance</option>
+                    <option value="inspection">Inspection</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="vehicleType">Vehicle Type</label>
+                <select id="vehicleType" name="vehicleType" required>
+                    <option value="">Select Vehicle Type</option>
+                    <option value="two_wheeler">Two Wheeler</option>
+                    <option value="four_wheeler">Four Wheeler</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location" required 
+                       placeholder="Enter your current location">
+            </div>
+
+            <div class="form-group">
+                <label for="contactNumber">Contact Number</label>
+                <input type="tel" id="contactNumber" name="contactNumber" required 
+                       placeholder="Enter your contact number">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Service Description</label>
+                <textarea id="description" name="description" rows="4" required 
+                          placeholder="Describe the issue or service needed"></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Request</button>
+        </form>
+    </div>
+
+    <script>
+        // Check authentication
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'loginuser.html';
+        }
+
+        // Load selected mechanic info
+        document.addEventListener('DOMContentLoaded', () => {
+            const selectedMechanic = JSON.parse(localStorage.getItem('selectedMechanic'));
+            if (!selectedMechanic) {
+                window.location.href = 'dashcust.html';
+                return;
+            }
+
+            document.getElementById('selectedMechanicInfo').innerHTML = `
+                <h3>Selected Mechanic</h3>
+                <p><i class="fas fa-user"></i> ${selectedMechanic.name}</p>
+            `;
+        });
+
+        // Handle form submission
+        document.getElementById('serviceRequestForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const selectedMechanic = JSON.parse(localStorage.getItem('selectedMechanic'));
+            const customer = JSON.parse(localStorage.getItem('user'));
+            const formData = {
+                mechanic_id: selectedMechanic.id,
+                mechanic_name: selectedMechanic.name,
+                customer_id: customer.id,
+                customer_name: customer.name,
+                service_type: document.getElementById('serviceType').value,
+                vehicle_type: document.getElementById('vehicleType').value,
+                location: document.getElementById('location').value,
+                contact_number: document.getElementById('contactNumber').value,
+                description: document.getElementById('description').value,
+                status: 'pending'
+            };
+
+            try {
+                const response = await makeApiCall('/services/create', 'POST', formData);
+                alert('Service request submitted successfully!');
+                window.location.href = 'dashcust.html';
+            } catch (error) {
+                console.error('Error submitting service request:', error);
+                alert('Failed to submit service request. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

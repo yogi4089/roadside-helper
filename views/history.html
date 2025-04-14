@@ -1,0 +1,244 @@
+<html>
+ <head>
+  <title>
+   Professional Auto Services - History
+  </title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <style>
+   body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            margin-right: 20px;
+            border: 2px solid rgba(255,255,255,0.9);
+            transition: transform 0.3s ease;
+        }
+        .header img:hover {
+            transform: scale(1.1);
+        }
+        .header h1 {
+            font-size: 28px;
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 1.2px;
+        }
+        .history {
+            text-align: center;
+            margin: 40px 0;
+            color: #1e3c72;
+        }
+        .history i {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        .history h2 {
+            font-size: 32px;
+            margin: 10px 0;
+            font-weight: 600;
+            position: relative;
+        }
+        .history h2:after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            margin: 15px auto;
+            border-radius: 2px;
+        }
+        .mechanic-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px auto;
+            max-width: 600px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mechanic-card:hover {
+            transform: translateY(-5px);
+        }
+        .mechanic-card p {
+            margin: 12px 0;
+            font-size: 16px;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+        }
+        .mechanic-card p:before {
+            content: '\f007';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            margin-right: 15px;
+            color: #1e3c72;
+            font-size: 18px;
+        }
+        .mechanic-card p:last-child:before {
+            content: '\f095';
+        }
+        .cancel-button {
+            display: block;
+            width: 200px;
+            margin: 40px auto;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(30,60,114,0.2);
+        }
+        .cancel-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(30,60,114,0.3);
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+        }
+        .book-button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(30,60,114,0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .book-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(30,60,114,0.3);
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+        }
+        .book-button i {
+            font-size: 14px;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+            animation: popIn 0.5s ease-out;
+        }
+        @keyframes popIn {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+        .popup-content {
+            text-align: center;
+        }
+        .popup i {
+            font-size: 50px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        .popup h3 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+        }
+  </style>
+ </head>
+ <body>
+  <div class="header">
+   <img alt="Auto Service Logo" src="mechanic.png"/>
+   <h1>
+    Professional Auto Services
+   </h1>
+  </div>
+  <div class="history">
+   <i class="fas fa-history"></i>
+   <h2>Service History</h2>
+  </div>
+  <div class="mechanic-card">
+   <p>Mechanic Name: Prince</p>
+   <p>Contact: +91 9408040400</p>
+   <button class="book-button" onclick="bookService(this)">Book Service</button>
+  </div>
+  <div class="mechanic-card">
+   <p>Mechanic Name: Yogi</p>
+   <p>Contact: +91 9898989898</p>
+   <button class="book-button" onclick="bookService(this)">Book Service</button>
+  </div>
+  <div class="mechanic-card">
+   <p>Mechanic Name: Jenis</p>
+   <p>Contact: +91 9898989898</p>
+   <button class="book-button" onclick="bookService(this)">Book Service</button>
+  </div>
+  <div class="mechanic-card">
+   <p>Mechanic Name: Ridham</p>
+   <p>Contact: +91 9876987098</p>
+   <button class="book-button" onclick="bookService(this)">Book Service</button>
+  </div>
+  <div class="mechanic-card">
+   <p>Mechanic Name: Sahil</p>
+   <p>Contact: +91 9898156800</p>
+   <button class="book-button" onclick="bookService(this)">Book Service</button>
+  </div>
+  
+  <button onclick="window.location.href='dashcust.html'">Back to Dashboard</button>
+
+
+  <div class="popup" id="bookingPopup">
+    <div class="popup-content">
+        <i class="fas fa-check-circle"></i>
+        <h3>Service Booked Successfully!</h3>
+        <p>Your mechanic will contact you shortly.</p>
+    </div>
+  </div>
+
+  <script>
+    function bookService(button) {
+        const popup = document.getElementById('bookingPopup');
+        popup.style.display = 'block';
+        button.innerHTML = 'Service Booked';
+        button.style.background = '#4CAF50';
+        button.disabled = true;
+        setTimeout(() => {
+            popup.style.display = 'none';
+        }, 3000);
+    }
+  </script>
+ </body>
+</html>

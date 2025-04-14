@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ongoing Services</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, #2b4c8c 0%, #1a365d 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.9);
+            transition: transform 0.3s ease;
+        }
+        .header img:hover {
+            transform: scale(1.1);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .back-button {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .back-button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .dashboard {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .dashboard h2 {
+            color: #1e3c72;
+            font-size: 28px;
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+        .dashboard h2:after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(to right, #2b4c8c, #1a365d);
+            margin: 10px auto;
+            border-radius: 2px;
+            opacity: 0.7;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .button.pending {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5253 100%);
+        }
+        .button.ongoing {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .button.ongoing:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 4px;
+            background: #00f2fe;
+            border-radius: 2px;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+        .requests {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            width: 95%;
+        }
+        .requests h3 {
+            font-size: 24px;
+            color: #1e3c72;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #1e3c72;
+        }
+        .request-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .request-card:hover {
+            transform: translateY(-5px);
+        }
+        .request-card p {
+            margin: 12px 0;
+            font-size: 16px;
+            color: #4a5568;
+            align-items: center;
+        }
+        .request-card strong {
+            min-width: 100px;
+            color: #1e3c72;
+            font-weight: 600;
+        }
+        .request-card .actions {
+            display: flex;
+            gap: 10px;
+        }
+        .request-card .actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .request-card .actions button.complete {
+            background: linear-gradient(135deg, #32CD32 0%, #228B22 100%);
+        }
+        .request-card .actions button.complete.completed {
+            background: linear-gradient(135deg, #32CD32 0%, #228B22 100%);
+            pointer-events: none;
+            animation: completeAnimation 0.5s ease forwards;
+        }
+        @keyframes completeAnimation {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .request-card .actions button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+        .ongoing-btn {
+            background: linear-gradient(45deg, #2b4c8c, #1a365d);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            width: 200px;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(43,76,140,0.2);
+        }
+        .ongoing-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(43,76,140,0.3);
+            background: linear-gradient(45deg, #1a365d, #2b4c8c);
+        }
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .header {
+                padding: 15px;
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .header-left {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .header img {
+                width: 40px;
+                height: 40px;
+                margin-right: 0;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .back-button {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .dashboard {
+                padding: 20px 15px;
+            }
+            
+            .dashboard h2 {
+                font-size: 24px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .button {
+                width: 100%;
+                justify-content: center;
+                padding: 12px 20px;
+            }
+            
+            .button.ongoing {
+                transform: none;
+            }
+            
+            .request-card {
+                padding: 15px;
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .request-card p {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .request-card strong {
+                min-width: auto;
+                margin-right: 5px;
+            }
+            
+            .request-card .actions {
+                width: 100%;
+                justify-content: center;
+                margin-top: 15px;
+            }
+            
+            .request-card .actions button {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .header h1 {
+                font-size: 18px;
+            }
+            
+            .dashboard h2 {
+                font-size: 20px;
+            }
+            
+            .button {
+                font-size: 14px;
+                padding: 10px 15px;
+            }
+            
+            .request-card {
+                padding: 12px;
+            }
+            
+            .request-card p {
+                font-size: 14px;
+            }
+            
+            .request-card .actions button {
+                font-size: 12px;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <img alt="Mechanic Profile Logo" src="mechanic.png"/>
+            <h1>Ongoing Services</h1>
+        </div>
+        <button onclick="window.location.href='mecprofile.html'" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Back to Profile
+        </button>
+    </div>
+    <div class="dashboard">
+        <h2>Ongoing Services</h2>
+        <div class="buttons">
+            <button class="button pending" onclick="window.location.href='request-service.html'">
+                <i class="fas fa-clock"></i>
+                Pending Requests
+            </button>
+            <button class="button ongoing">
+                <i class="fas fa-tools"></i>
+                Ongoing Services
+            </button>
+        </div>
+    </div>
+    <div class="requests">
+        <h3>Active Services</h3>
+        <div id="requestsContainer">
+            <!-- Service requests will be loaded here -->
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script>
+        // Check authentication
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'meclogin.html';
+        }
+
+        // Get logged in mechanic
+        const mechanic = JSON.parse(localStorage.getItem('user'));
+        if (!mechanic) {
+            window.location.href = 'meclogin.html';
+        }
+
+        // Load ongoing service requests
+        async function loadServiceRequests() {
+            try {
+                const mechanic = JSON.parse(localStorage.getItem('user'));
+                console.log('Mechanic data:', mechanic);
+                
+                if (!mechanic || !mechanic.name) {
+                    throw new Error('Mechanic information not found');
+                }
+
+                console.log('Fetching services for mechanic:', mechanic.name);
+                const response = await fetch(`/api/services/mechanic/${encodeURIComponent(mechanic.name)}/accepted`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                console.log('Raw API Response:', response);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('API Error Response:', errorText);
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('API Response:', data);
+
+                // No need to filter since the API returns only accepted services
+                const acceptedServices = data;
+                console.log(`Found ${acceptedServices.length} accepted services`);
+                
+                if (!acceptedServices || acceptedServices.length === 0) {
+                    document.getElementById('requestsContainer').innerHTML = 
+                        '<p style="text-align: center; color: #666;">No ongoing services found.</p>';
+                    return;
+                }
+
+                displayRequests(acceptedServices);
+            } catch (error) {
+                console.error('Error loading requests:', error);
+                document.getElementById('requestsContainer').innerHTML = 
+                    `<p style="text-align: center; color: #dc3545;">
+                        <i class="fas fa-exclamation-circle"></i> 
+                        Error loading requests: ${error.message || 'Please try again'}
+                    </p>`;
+            }
+        }
+
+        // Display requests
+        function displayRequests(requests) {
+            const container = document.getElementById('requestsContainer');
+            console.log('In displayRequests - requests:', requests);
+            
+            if (!requests || requests.length === 0) {
+                console.log('No requests to display');
+                container.innerHTML = '<p style="text-align: center; color: #666;">No ongoing services.</p>';
+                return;
+            }
+
+            // Sort requests by creation date (newest first)
+            const sortedRequests = requests.sort((a, b) => 
+                new Date(b.created_at) - new Date(a.created_at)
+            );
+
+            const requestsHtml = sortedRequests.map(request => {
+                console.log('Processing request:', request);
+                return `
+                    <div class="request-card">
+                        <div class="request-info" style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <h4 style="margin: 0; color: #1e3c72;">Request #${request.id}</h4>
+                                <span style="color: #666; font-size: 0.9em;">${new Date(request.created_at).toLocaleString()}</span>
+                            </div>
+                            <p><strong>Customer:</strong> ${request.customer_name || 'N/A'}</p>
+                            <p><strong>Contact:</strong> ${request.contact_number || 'N/A'}</p>
+                            <p><strong>Service Type:</strong> ${request.service_type || 'N/A'}</p>
+                            <p><strong>Vehicle Type:</strong> ${request.vehicle_type || 'N/A'}</p>
+                            <p><strong>Location:</strong> ${request.location || 'N/A'}</p>
+                            <p><strong>Description:</strong> ${request.description || 'No description provided'}</p>
+                        </div>
+                        <div class="actions" style="margin-left: 20px;">
+                            <button class="complete" onclick="updateStatus(${request.id}, 'completed', event)">
+                                <i class="fas fa-check"></i> Mark Complete
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = requestsHtml;
+        }
+
+        // Update service status
+        async function updateStatus(serviceId, status, event) {
+            try {
+                const button = event.target.closest('button');
+                const card = button.closest('.request-card');
+                
+                // Disable button
+                button.disabled = true;
+                button.style.opacity = '0.7';
+
+                // Show loading state
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                
+                const response = await fetch(`/api/services/${serviceId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ status })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to update status');
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Update button appearance
+                    button.className = 'complete completed';
+                    button.innerHTML = '<i class="fas fa-check"></i> Completed';
+                    
+                    // Show success message with green color
+                    const message = document.createElement('div');
+                    message.style.color = '#32CD32';
+                    message.style.marginTop = '10px';
+                    message.style.fontWeight = 'bold';
+                    message.textContent = 'Service marked as completed successfully';
+                    card.appendChild(message);
+                    
+                    // Remove the card after 2 seconds and reload the list
+                    setTimeout(() => {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateX(100px)';
+                        card.style.transition = 'all 0.5s ease';
+                        
+                        setTimeout(() => {
+                            card.remove();
+                            // Reload remaining requests
+                            loadServiceRequests();
+                        }, 500);
+                    }, 1500);
+                } else {
+                    throw new Error(result.message || 'Failed to update status');
+                }
+                
+            } catch (error) {
+                console.error('Error updating status:', error);
+                
+                // Re-enable button
+                button.disabled = false;
+                button.style.opacity = '1';
+                
+                // Reset button text
+                button.innerHTML = '<i class="fas fa-check"></i> Mark Complete';
+                
+                // Show error message in red
+                const errorMessage = document.createElement('div');
+                errorMessage.style.color = '#dc3545';
+                errorMessage.style.marginTop = '10px';
+                errorMessage.style.fontWeight = 'bold';
+                errorMessage.textContent = error.message || 'Failed to update status. Please try again.';
+                card.appendChild(errorMessage);
+                
+                // Remove error message after 3 seconds
+                setTimeout(() => {
+                    errorMessage.remove();
+                }, 3000);
+            }
+        }
+
+        // Load requests when page loads
+        document.addEventListener('DOMContentLoaded', loadServiceRequests);
+    </script>
+</body>
+</html>
