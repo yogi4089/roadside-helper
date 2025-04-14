@@ -10,7 +10,8 @@ const connectionString = process.env.DATABASE_URL ||
 console.log('Connecting to database with connection string:', connectionString.replace(/:[^:@]*@/, ':****@'));
 
 const pool = new Pool({
-  connectionString
+  connectionString,
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false // Add this
 });
 
 // Test the connection
