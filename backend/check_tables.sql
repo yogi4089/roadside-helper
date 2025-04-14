@@ -1,16 +1,18 @@
 -- Check if customer table exists
 DO $$
-BEGIN
+BEIN
     IF NOT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'customer') THEN
         -- Create customer table
         CREATE TABLE customer (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(100) NOT NULL,
-            email VARCHAR(100) UNIQUE NOT NULL,
-            password VARCHAR(100) NOT NULL,
-            contact VARCHAR(20),
-            gender VARCHAR(10),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            id integer NOT NULL DEFAULT nextval('customer_id_seq'::regclass),
+    name character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    email character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    password character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    contact character varying(20) COLLATE pg_catalog."default",
+    gender character varying(10) COLLATE pg_catalog."default",
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT customer_pkey PRIMARY KEY (id),
+    CONSTRAINT customer_email_key UNIQUE (email)
         );
         RAISE NOTICE 'Customer table created successfully';
     ELSE
@@ -24,13 +26,16 @@ BEGIN
     IF NOT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'mechanics') THEN
         -- Create mechanics table
         CREATE TABLE mechanics (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(100) NOT NULL,
-            email VARCHAR(100) UNIQUE NOT NULL,
-            password VARCHAR(100) NOT NULL,
-            phone VARCHAR(20),
-            location VARCHAR(200),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            id integer NOT NULL DEFAULT nextval('mechanics_id_seq'::regclass),
+    name character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    email character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    password character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    phone character varying(20) COLLATE pg_catalog."default",
+    location character varying(200) COLLATE pg_catalog."default",
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    service_category character varying(255) COLLATE pg_catalog."default",
+    CONSTRAINT mechanics_pkey PRIMARY KEY (id),
+    CONSTRAINT mechanics_email_key UNIQUE (email)
         );
         RAISE NOTICE 'Mechanics table created successfully';
     ELSE
@@ -38,21 +43,29 @@ BEGIN
     END IF;
 END $$;
 
--- Check if service_history table exists
+-- Check if services table exists
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'service_history') THEN
-        -- Create service_history table
-        CREATE TABLE service_history (
-            id SERIAL PRIMARY KEY,
-            customer_id INTEGER REFERENCES customer(id),
-            mechanic_id INTEGER REFERENCES mechanics(id),
-            status VARCHAR(20) DEFAULT 'pending',
-            date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            description TEXT
+    IF NOT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'services') THEN
+        -- Create services table
+        CREATE TABLE services (
+             id integer NOT NULL DEFAULT nextval('services_id_seq'::regclass),
+    customer_id integer NOT NULL,
+    customer_name character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    mechanic_id integer NOT NULL,
+    mechanic_name character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    service_type character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    vehicle_type character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    location character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    description text COLLATE pg_catalog."default",
+    status character varying(20) COLLATE pg_catalog."default" DEFAULT 'pending'::character varying,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    contact_number character varying(20) COLLATE pg_catalog."default",
+    CONSTRAINT services_pkey PRIMARY KEY (id)
         );
-        RAISE NOTICE 'Service history table created successfully';
+        RAISE NOTICE 'Services table created successfully';
     ELSE
-        RAISE NOTICE 'Service history table already exists';
+        RAISE NOTICE 'Services table already exists';
     END IF;
 END $$; 
