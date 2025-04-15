@@ -47,7 +47,11 @@ END $$;
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'services') THEN
+<<<<<<< HEAD
         -- Create services table
+=======
+        -- Create service_history table
+>>>>>>> b5cc8891b787ba362848eb5dff81f601590e4038
         CREATE TABLE services (
              id integer NOT NULL DEFAULT nextval('services_id_seq'::regclass),
     customer_id integer NOT NULL,

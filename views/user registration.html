@@ -248,9 +248,11 @@
                 };
                 
                 console.log('Sending registration data:', userData);
-                //commented out for local  
+                
+                // For local development (uncomment this and comment out Render.com URL)
                 //const response = await fetch("http://localhost:5000/api/customers/register", {
  
+                // For Render.com production (comment this out when using localhost)
                 const response = await fetch("https://roadside-helper.onrender.com/api/customers/register", {
                     method: 'POST',
                     headers: {
