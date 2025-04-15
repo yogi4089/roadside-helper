@@ -87,6 +87,50 @@ A comprehensive web application for managing roadside assistance services, conne
 - `GET /services/mechanic/:name/completed` - Get completed services
 - `PUT /services/:id/status` - Update service status
 
+## Switching Between Local and Render Environments
+
+### To Run Locally
+1. In `views/api.js`:
+   ```javascript
+   const API_BASE_URL = 'http://localhost:5000/api';
+   //const API_BASE_URL = 'https://roadside-helper.onrender.com/api'; // Production URL
+   ```
+
+2. In `backend/.env`:
+   ```shell
+   # Enable this for local development
+   DATABASE_URL=postgresql://postgres:Yogi.DB@localhost:5432/auto_service?sslmode=disable
+
+   # Comment out the Render.com URL
+   #DATABASE_URL=postgresql://auto_service_qd5m_user:VemIDveiykmbUMpAb450yKfs5JNKbdeJ@dpg-cvuiipc9c44c7383num0-a.oregon-postgres.render.com/auto_service_qd5m
+   ```
+
+### To Run on Render.com
+1. In `views/api.js`:
+   ```javascript
+   //const API_BASE_URL = 'http://localhost:5000/api';
+   const API_BASE_URL = 'https://roadside-helper.onrender.com/api'; // Production URL
+   ```
+
+2. In `backend/.env`:
+   ```shell
+   # Comment out local development URL
+   #DATABASE_URL=postgresql://postgres:Yogi.DB@localhost:5432/auto_service?sslmode=disable
+
+   # Enable this for Render.com
+   DATABASE_URL=postgresql://auto_service_qd5m_user:VemIDveiykmbUMpAb450yKfs5JNKbdeJ@dpg-cvuiipc9c44c7383num0-a.oregon-postgres.render.com/auto_service_qd5m
+   ```
+
+### After Switching
+1. Stop the current server (if running)
+2. Start the server again:
+   ```bash
+   cd backend
+   node server.js
+   ```
+
+Note: Make sure your local PostgreSQL server is running when using local environment.
+
 ## Setup Instructions
 
 1. Install dependencies:
@@ -150,3 +194,8 @@ node backend/server.js
 6. Chat functionality
 7. Service scheduling
 8. Emergency roadside assistance 
+
+## To run on local
+1. change api.js
+2. change backend/.env
+3. change user registration.html
