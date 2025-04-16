@@ -6,6 +6,7 @@ const path = require('path');
 const customerRoutes = require('./routes/customerRoutes');
 const mechanicRoutes = require('./routes/mechanicRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 dotenv.config();
 const app = express();
@@ -24,6 +25,7 @@ app.use((req, res, next) => {
 app.use('/api/customers', customerRoutes);
 app.use('/api/mechanics', mechanicRoutes);
 app.use('/api/services', serviceRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Serve static files from the views directory
 const viewsPath = path.join(__dirname, '../views');

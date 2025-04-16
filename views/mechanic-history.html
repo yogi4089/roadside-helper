@@ -219,7 +219,7 @@
             const card = document.createElement('div');
             card.className = 'history-card';
             
-            const date = service.completed_at ? new Date(service.completed_at).toLocaleString() : 'N/A';
+            const date = service.completed_at ? new Date(service.completed_at).toLocaleString() : '';
             
             card.innerHTML = `
                 <div class="service-header">
