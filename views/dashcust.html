@@ -172,6 +172,81 @@
             font-size: 18px;
             margin: 10px 0;
         }
+        .towing-container {
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+        .towing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            max-width: 500px;
+            width: 100%;
+        }
+        .towing-card:hover {
+            transform: translateY(-5px);
+        }
+        .towing-icon {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .towing-icon i {
+            font-size: 60px;
+            color: #2b4c8c;
+        }
+        .towing-content {
+            text-align: center;
+        }
+        .towing-content h2 {
+            margin: 0 0 10px 0;
+            color: #2b4c8c;
+            font-size: 22px;
+            font-weight: 600;
+        }
+        .towing-btn {
+            width: 100%;
+            padding: 16px 32px;
+            background: linear-gradient(45deg, #2b4c8c, #1a365d);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(43,76,140,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .towing-btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        .towing-btn:hover:before {
+            left: 100%;
+        }
+        .towing-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(43,76,140,0.3);
+            background: linear-gradient(45deg, #1a365d, #2b4c8c);
+        }
+        .towing-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 4px 15px rgba(43,76,140,0.2);
+        }
     </style>
 </head>
 <body>
@@ -185,8 +260,23 @@
             Go to Profile
         </button>
     </div>
+    
     <div class="mechanics-container" id="mechanicsList">
         <!-- Mechanics will be loaded here -->
+    </div>
+    
+    <!-- Towing Service Quick Access -->
+    <div class="towing-container">
+        <div class="towing-card">
+            <div class="towing-icon">
+                <i class="fas fa-truck-pickup"></i>
+            </div>
+            <div class="towing-content">
+                <h2>Need a Tow?</h2>
+                <p>Our towing service is available 24/7 for emergency vehicle recovery and transportation.</p>
+                <button onclick="requestTowing()" class="towing-btn">Request Towing Service</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -249,6 +339,11 @@
         function handleLogout() {
             localStorage.removeItem('token');
             window.location.href = 'loginuser.html';
+        }
+        
+        function requestTowing() {
+            // Implement towing service request logic here
+            alert('Towing service requested!');
         }
     </script>
 </body>
