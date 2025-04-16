@@ -59,6 +59,29 @@
             z-index: 1;
         }
 
+        .admin-icon {
+            position: absolute;
+            top: clamp(10px, 2vw, 20px);
+            left: clamp(10px, 2vw, 20px);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(30,60,114,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #1e3c72;
+            font-size: 20px;
+            z-index: 1;
+        }
+
+        .admin-icon:hover {
+            background: rgba(30,60,114,0.2);
+            transform: rotate(30deg);
+        }
+
         .tutorial-btn:before {
             content: '\f05a';
             font-family: 'Font Awesome 5 Free';
@@ -229,6 +252,7 @@
 <body>
     <div class="container">
         <button class="tutorial-btn" onclick="window.location.href='tutorial.html'">Tutorial</button>
+        <i class="admin-icon fas fa-user-cog" onclick="window.location.href='admin-login.html'"></i>
         <h1>RoadSide Helpers</h1>
         <div class="option">
             <img src="https://storage.googleapis.com/a1aa/image/9Huw3xskSsZzO5Ilet26bXgTw9ktnpaLMCfx0eEIRo9R9jQnA.jpg" alt="Icon of a user" width="50" height="50">
@@ -244,13 +268,6 @@
             <div class="auth-buttons">
                 <button class="auth-button" onclick="window.location.href='meclogin.html'">Login</button>
                 <button class="auth-button" onclick="window.location.href='mecsignup.html'">Sign Up</button>
-            </div>
-        </div>
-        <div class="option">
-            <img src="https://storage.googleapis.com/a1aa/image/admin-icon.png" alt="Icon of an admin" width="50" height="50" onerror="this.src='https://storage.googleapis.com/a1aa/image/9Huw3xskSsZzO5Ilet26bXgTw9ktnpaLMCfx0eEIRo9R9jQnA.jpg'">
-            <label>Admin</label>
-            <div class="auth-buttons">
-                <button class="admin-button" onclick="window.location.href='admin-login.html'">Enter</button>
             </div>
         </div>
     </div>
