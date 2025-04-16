@@ -260,12 +260,12 @@
 <body>
     <div class="header">
         <div class="header-left">
-            <img alt="User Profile Logo" src="mechanic.png"/>
-            <h1>Service History</h1>
+            <img alt="Mechanic Profile Logo" src="mechanic.png"/>
+            <h1>Mechanic Service History</h1>
         </div>
-        <button onclick="window.location.href='userprofile.html'" class="back-button">
+        <button onclick="window.location.href='dashcust.html'" class="back-button">
             <i class="fas fa-arrow-left"></i>
-            Back to Profile
+            Back to Dashboard
         </button>
     </div>
 
@@ -340,6 +340,10 @@
                     <div class="detail-item">
                         <i class="fas fa-user"></i>
                         <span><span class="detail-label">Mechanic:</span> <span class="detail-value">${service.mechanic_name || 'N/A'}</span></span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-phone"></i>
+                        <span><span class="detail-label">Contact:</span> <span class="detail-value">${service.contact_number || 'N/A'}</span></span>
                     </div>
                     <div class="detail-item">
                         <i class="fas fa-tools"></i>

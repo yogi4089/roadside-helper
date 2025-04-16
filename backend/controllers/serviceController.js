@@ -1,4 +1,5 @@
 const pool = require('../config/db');
+const { sendEmailToMechanic, formatServiceRequestEmail } = require('../utils/mailer');
 
 exports.createService = async (req, res) => {
     try {
@@ -22,6 +23,46 @@ exports.createService = async (req, res) => {
             RETURNING *`,
             [customer_id, customer_name, mechanic_id, mechanic_name, service_type, vehicle_type, location, contact_number, description, status]
         );
+
+        // Get the mechanic's email from the database
+        const mechanicResult = await pool.query(
+            'SELECT email FROM mechanics WHERE id = $1',
+            [mechanic_id]
+        );
+
+        if (mechanicResult.rows.length > 0) {
+            const mechanicEmail = mechanicResult.rows[0].email;
+            
+            // Prepare email data
+            const serviceData = {
+                mechanicName: mechanic_name,
+                customerName: customer_name,
+                contactNumber: contact_number,
+                serviceType: service_type,
+                location: location,
+                description: description,
+                createdAt: result.rows[0].created_at
+            };
+
+            try {
+                // Format email content
+                const emailContent = formatServiceRequestEmail(serviceData);
+                
+                // Send email to mechanic
+                await sendEmailToMechanic(
+                    mechanicEmail,
+                    `New Service Request: ${service_type}`,
+                    emailContent
+                );
+                
+                console.log(`Email notification sent to mechanic ${mechanic_name} at ${mechanicEmail}`);
+            } catch (emailError) {
+                // Log email error but don't fail the request
+                console.error('Error sending email notification:', emailError);
+            }
+        } else {
+            console.error(`Mechanic email not found for ID: ${mechanic_id}`);
+        }
 
         res.status(201).json({
             message: 'Service request created successfully',
