@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mechanic Dashboard - RoadSide Helpers</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="api.js"></script>
     <style>
         body {
@@ -108,6 +109,59 @@
             padding: 40px;
             color: #666;
         }
+        .map-btn {
+            background: #2b4c8c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .map-btn:hover {
+            background: #1a365d;
+        }
+        .location-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+        .map-container {
+            height: 400px;
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
@@ -122,6 +176,7 @@
         <!-- Service cards will be loaded here -->
     </div>
 
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
         // Check authentication
         const token = localStorage.getItem('token');
@@ -167,6 +222,9 @@
                         <p><i class="fas fa-car"></i> ${service.vehicle_type}</p>
                         <p><i class="fas fa-map-marker-alt"></i> ${service.location}</p>
                         <p><i class="fas fa-info-circle"></i> ${service.description}</p>
+                        <button class="map-btn" onclick="showLocationModal(${service.id}, '${service.location}')">
+                            <i class="fas fa-map"></i> View Location
+                        </button>
                     </div>
                     <div class="actions">
                         ${service.status === 'pending' ? `
@@ -206,6 +264,73 @@
 
         // Load services when page loads
         document.addEventListener('DOMContentLoaded', loadServices);
+
+        // Show location modal
+        function showLocationModal(serviceId, location) {
+            // Create modal element
+            const modal = document.createElement('div');
+            modal.className = 'location-modal';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="close-modal" onclick="closeLocationModal()">×</div>
+                    <h2>Service Location</h2>
+                    <p>${location}</p>
+                    <div class="map-container" id="map-${serviceId}"></div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // Extract coordinates from location string if available
+            let lat = 37.7749; // Default coordinates (San Francisco)
+            let lng = -122.4194;
+            let locationName = location;
+            
+            // Check if location contains coordinates in format "Location [lat, lng]"
+            if (location.includes('[') && location.includes(']')) {
+                try {
+                    const coordsStr = location.substring(location.indexOf('[') + 1, location.indexOf(']'));
+                    const coords = coordsStr.split(',').map(coord => parseFloat(coord.trim()));
+                    
+                    if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+                        lat = coords[0];
+                        lng = coords[1];
+                        locationName = location.substring(0, location.indexOf('[')).trim();
+                    }
+                } catch (e) {
+                    console.error('Error parsing coordinates:', e);
+                }
+            }
+
+            // Initialize map
+            const map = L.map(`map-${serviceId}`).setView([lat, lng], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
+                subdomains: ['a', 'b', 'c']
+            }).addTo(map);
+
+            // Add marker
+            const marker = L.marker([lat, lng]).addTo(map);
+            marker.bindPopup(locationName).openPopup();
+            
+            // Add directions link
+            const directionsLink = document.createElement('a');
+            directionsLink.href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+            directionsLink.target = '_blank';
+            directionsLink.className = 'map-btn';
+            directionsLink.innerHTML = '<i class="fas fa-directions"></i> Get Directions';
+            directionsLink.style.marginTop = '10px';
+            directionsLink.style.display = 'inline-block';
+            modal.querySelector('.modal-content').appendChild(directionsLink);
+        }
+
+        // Close location modal
+        function closeLocationModal() {
+            const modal = document.querySelector('.location-modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
     </script>
 </body>
-</html> 
+</html>

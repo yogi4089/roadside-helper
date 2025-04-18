@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Request Service - RoadSide Helpers</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="api.js"></script>
     <style>
         * {
@@ -154,6 +155,30 @@
             color: #2b4c8c;
         }
 
+        .location-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .location-btn {
+            background: #2b4c8c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .location-map {
+            width: 100%;
+            height: 200px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
         /* Mobile Adjustments */
         @media (max-width: 480px) {
             .header {
@@ -242,8 +267,16 @@
 
             <div class="form-group">
                 <label for="location">Location</label>
-                <input type="text" id="location" name="location" required 
-                       placeholder="Enter your current location">
+                <div class="location-input-group">
+                    <input type="text" id="location" name="location" required 
+                           placeholder="Enter your current location">
+                    <button type="button" onclick="getCurrentLocation()" class="location-btn">
+                        <i class="fas fa-map-marker-alt"></i> Use My Location
+                    </button>
+                </div>
+                <input type="hidden" id="latitude" name="latitude">
+                <input type="hidden" id="longitude" name="longitude">
+                <div id="map" class="location-map"></div>
             </div>
 
             <div class="form-group">
@@ -262,6 +295,7 @@
         </form>
     </div>
 
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
         // Check authentication
         const token = localStorage.getItem('token');
@@ -284,26 +318,37 @@
         });
 
         // Handle form submission
-        document.getElementById('serviceRequestForm').addEventListener('submit', async (e) => {
+        document.getElementById('serviceRequestForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-
-            const selectedMechanic = JSON.parse(localStorage.getItem('selectedMechanic'));
-            const customer = JSON.parse(localStorage.getItem('user'));
-            const formData = {
-                mechanic_id: selectedMechanic.id,
-                mechanic_name: selectedMechanic.name,
-                customer_id: customer.id,
-                customer_name: customer.name,
+            
+            const mechanicData = JSON.parse(localStorage.getItem('selectedMechanic'));
+            const userData = JSON.parse(localStorage.getItem('user'));
+            
+            // Prepare location data - ensure coordinates are included if available
+            let locationValue = document.getElementById('location').value;
+            const latitude = document.getElementById('latitude').value;
+            const longitude = document.getElementById('longitude').value;
+            
+            // If we have coordinates but they're not in the location string, add them
+            if (latitude && longitude && !locationValue.includes('[')) {
+                locationValue = `${locationValue} [${latitude}, ${longitude}]`;
+            }
+            
+            const serviceData = {
+                customer_id: userData.id,
+                customer_name: userData.name,
+                mechanic_id: mechanicData.id,
+                mechanic_name: mechanicData.name,
                 service_type: document.getElementById('serviceType').value,
                 vehicle_type: document.getElementById('vehicleType').value,
-                location: document.getElementById('location').value,
+                location: locationValue,
                 contact_number: document.getElementById('contactNumber').value,
                 description: document.getElementById('description').value,
                 status: 'pending'
             };
 
             try {
-                const response = await makeApiCall('/services/create', 'POST', formData);
+                const response = await makeApiCall('/services/create', 'POST', serviceData);
                 alert('Service request submitted successfully!');
                 window.location.href = 'dashcust.html';
             } catch (error) {
@@ -311,6 +356,33 @@
                 alert('Failed to submit service request. Please try again.');
             }
         });
+
+        // Get current location
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    
+                    // Store coordinates in hidden fields for reference
+                    document.getElementById('latitude').value = latitude;
+                    document.getElementById('longitude').value = longitude;
+                    
+                    // Update the location field with coordinates and a readable format
+                    document.getElementById('location').value = `${document.getElementById('location').value || 'My Location'} [${latitude}, ${longitude}]`;
+
+                    // Display map
+                    const map = L.map('map').setView([latitude, longitude], 13);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
+                        subdomains: ['a', 'b', 'c']
+                    }).addTo(map);
+                    L.marker([latitude, longitude]).addTo(map);
+                });
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
     </script>
 </body>
 </html>
