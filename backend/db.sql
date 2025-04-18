@@ -42,6 +42,12 @@ CREATE TABLE IF NOT EXISTS services (
 );
 
 --To reset table--
-TRUNCATE TABLE services RESTART IDENTITY;
+TRUNCATE TABLE 
+  services,
+  customer,
+  mechanics
+RESTART IDENTITY 
+CASCADE;
+
 
 
